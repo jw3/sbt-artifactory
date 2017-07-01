@@ -28,7 +28,9 @@ object ArtifactoryPlugin extends AutoPlugin {
         sys.env.get("ARTIFACTORY_DEPLOY_USER")
       },
       password in Artifactory := {
-        sys.env.get("ARTIFACTORY_DEPLOY_PASS")
+        sys.env.get("ARTIFACTORY_DEPLOY_PASS").orElse(
+          sys.env.get("ARTIFACTORY_DEPLOY_TOKEN")
+        )
       },
       publishTo := {
         val targetRepo = if (isSnapshot.value) "snapshot" else "release"
@@ -44,9 +46,9 @@ object ArtifactoryPlugin extends AutoPlugin {
       },
       publish in Artifactory := {
         val log = streams.value.log
-        if (validateHostname(host.value)) sys.error("Artifactory hostname was not specified.")
+        if (!validateHostname(host.value)) sys.error("Artifactory hostname was not specified.")
 
-        log.info(s"============== Publishing to Artifactory at ${host.value}${user.value.map(u ⇒ s" as $u").getOrElse("")} ==============")
+        log.debug(s"============== Publishing to Artifactory at ${host.value}${user.value.map(u ⇒ s" as $u").getOrElse("")} ==============")
         publish.value
       }
     )
@@ -55,7 +57,8 @@ object ArtifactoryPlugin extends AutoPlugin {
   import autoImport._
 
   override def requires = IvyPlugin
-  override def projectSettings = artifactorySettings
+  override def projectConfigurations = Seq(Artifactory)
+  override def projectSettings = artifactorySettings ++ inConfig(Artifactory)(artifactorySettings)
 
   private def host = hostname in Artifactory
   private def user = username in Artifactory

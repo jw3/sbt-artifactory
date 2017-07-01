@@ -7,7 +7,8 @@ The plugin can be configured through the environment or SBT setting keys
 #### Environment
 - `ARTIFACTORY_DEPLOY_HOST`: String; hostname of artifactory server
 - `ARTIFACTORY_DEPLOY_USER`: String; username to deploy artifacts with
-- `ARTIFACTORY_DEPLOY_TOKEN`: String; api token belonging to user specified with `ARTIFACTORY_DEPLOY_USER`
+- `ARTIFACTORY_DEPLOY_PASS`: String; api token belonging to user specified with `ARTIFACTORY_DEPLOY_USER`
+- `ARTIFACTORY_DEPLOY_TOKEN`: String; alias used for password if `ARTIFACTORY_DEPLOY_PASS` is not set
 
 #### Setting Keys
 - `hostname in Artifactory`: String; required
