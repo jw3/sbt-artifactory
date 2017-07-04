@@ -49,7 +49,7 @@ object ArtifactoryPlugin extends AutoPlugin {
         if (publishTo.value.isEmpty) sys.error("Artifactory hostname was not specified.")
 
         val log = streams.value.log
-        log.info(s"============== Publishing to Artifactory at ${host.value}${user.value.map(u ⇒ s" as $u").getOrElse("")} ==============")
+        log.info(s"============== Publish ${project.value} to Artifactory at ${host.value}${user.value.map(u ⇒ s" as $u").getOrElse("")} ==============")
 
         publish.value
       },
@@ -70,6 +70,7 @@ object ArtifactoryPlugin extends AutoPlugin {
   private def host = hostname in Artifactory
   private def user = username in Artifactory
   private def pass = password in Artifactory
+  private def project = name in ThisProject
 
   private def validHostname(uri: String): Boolean = uri.nonEmpty
 }
