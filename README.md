@@ -2,7 +2,15 @@
 
 ### Configuration
 
-The plugin can be configured through the environment or SBT setting keys
+```sbtshell
+addSbtPlugin("com.github.jw3" % "sbt-artifactory" % "0.2")
+```
+
+The plugin has three configuration settings and can be configured through the environment or SBT setting keys
+
+- Hostname: required
+- Username: optional
+- Password or Token: optional
 
 #### Environment
 - `ARTIFACTORY_DEPLOY_HOST`: String; hostname of artifactory server
@@ -14,6 +22,10 @@ The plugin can be configured through the environment or SBT setting keys
 - `hostname in Artifactory`: String; required
 - `username in Artifactory`: String; optional
 - `password in Artifactory`: String; optional
+
+## Resolving
+
+Currently published to https://bintray.com/jw3/sbt-plugin-releases
 
 ## Disclaimer ##
 
