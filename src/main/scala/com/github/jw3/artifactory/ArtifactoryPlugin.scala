@@ -30,8 +30,11 @@ object ArtifactoryPlugin extends AutoPlugin {
     publishArtifact := true,
     publishMavenStyle := true,
     publishTo := {
-      val targetRepo = if (isSnapshot.value) "snapshot" else "release"
-      Some("Artifactory Realm" at s"https://${host.value}/libs-$targetRepo-local")
+      if (!validHostname(host.value)) None
+      else {
+        val targetRepo = if (isSnapshot.value) "snapshot" else "release"
+        Some("Artifactory Realm" at s"https://${host.value}/libs-$targetRepo-local")
+      }
     },
     credentials := {
       if (user.value.isDefined) Seq(
@@ -43,10 +46,10 @@ object ArtifactoryPlugin extends AutoPlugin {
   ) ++ inConfig(Artifactory)(
     Seq(
       publishArtifacts := {
-        if (!validateHostname(host.value)) sys.error("Artifactory hostname was not specified.")
+        if (publishTo.value.isEmpty) sys.error("Artifactory hostname was not specified.")
 
         val log = streams.value.log
-        log.info(s"============== Publishing ${project.value} to Artifactory at ${host.value}${user.value.map(u ⇒ s" as $u").getOrElse("")} ==============")
+        log.info(s"============== Publishing to Artifactory at ${host.value}${user.value.map(u ⇒ s" as $u").getOrElse("")} ==============")
 
         publish.value
       },
@@ -67,7 +70,6 @@ object ArtifactoryPlugin extends AutoPlugin {
   private def host = hostname in Artifactory
   private def user = username in Artifactory
   private def pass = password in Artifactory
-  private def project = name in ThisProject
 
-  private def validateHostname(uri: String): Boolean = uri.nonEmpty
+  private def validHostname(uri: String): Boolean = uri.nonEmpty
 }
